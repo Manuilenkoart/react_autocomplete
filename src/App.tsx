@@ -4,7 +4,7 @@ import { peopleFromServer } from './data/people';
 import { Person } from './types/Person';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-function debonce(callBack: Function, delay: number) {
+function debounce(callBack: Function, delay: number) {
   let timerId = 0;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,31 +19,31 @@ export const App: React.FC = () => {
   const [dropdownOptions, setDropdownOptions] = useState(peopleFromServer);
 
   const [search, setSearch] = useState('');
-  const [searchDebonce, setSearchDebonce] = useState('');
+  const [debounceSearch, setDebounceSearch] = useState('');
 
-  const debonceSerch = debonce(setSearchDebonce, 300);
+  const debonceSerch = debounce(setDebounceSearch, 300);
 
-  const [dropdownOptionSelected, setSropdownOptionSelected] =
+  const [dropdownOptionSelected, setDropdownOptionSelected] =
     useState<Person | null>(null);
 
   useEffect(() => {
     setDropdownOptions(() => {
-      return searchDebonce.length
-        ? peopleFromServer.filter(({ name }) => name.includes(searchDebonce))
+      return debounceSearch.trim().length
+        ? peopleFromServer.filter(({ name }) => name.includes(debounceSearch))
         : peopleFromServer;
     });
-  }, [searchDebonce]);
+  }, [debounceSearch]);
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
     setSearch(value);
     debonceSerch(value);
-    setSropdownOptionSelected(null);
+    setDropdownOptionSelected(null);
   };
 
   const handleDropdownClick = (person: Person) => {
-    setSropdownOptionSelected(person);
+    setDropdownOptionSelected(person);
   };
 
   return (
